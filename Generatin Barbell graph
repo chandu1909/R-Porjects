@@ -1,0 +1,56 @@
+#Author: Chandra sekhar Polavarapu
+#Project 1
+#This project explores the Sunlet and Barbell Graphs.
+library(igraph)
+
+######Barbell Graphs#########
+
+barbellGraph <- function(n){
+  
+  #Determining number of verticies and edges of the n-barbell graph
+  
+  order <- n #to store original number of vertices
+  edges<-((n*n)-n)/2  #size of complete graph
+  
+  size <- ((n*n)-n)+1 # determining size of the n-barbell graph
+  barbellOrder <- 2*n # Determining order of the n-barbell graph
+  
+  #Data frames to hold vertices and edges list
+  
+  vertexDF <- data.frame("Vertices"=1:barbellOrder) #Holds the total number of vertices
+  edgeDF <- data.frame(from=NA,to=NA)[numeric(0), ] #Holds total number of edges with connections
+  
+  i<-1
+  j<-1
+  #Adding edge connections for first graph
+  for(i in 1:order){
+    for(j in i:order){
+      if(j>i)
+      edgeDF<-rbind(edgeDF,data.frame(from=i,to=j))
+     
+    }    
+  }
+  #generating replica of the complete graph generated earlier 
+    for(i in n+1:barbellOrder){
+    for(j in n:barbellOrder){
+      if(j>i)
+        edgeDF<-rbind(edgeDF,data.frame(from=i,to=j)) #adding edges in replica
+      
+    }    
+  }
+  
+  #adding bridge edge to data frame edgeDF- connecting first node of both the graphs
+  
+  first_node<-vertexDF[1,]
+  edgeDF<-rbind(edgeDF,data.frame(from=first_node,to=n+1))
+  
+  g<-graph_from_data_frame(edgeDF, directed = FALSE, vertices = vertexDF)
+  
+  g$name <- paste("barbell(",n,")",sep = "")
+  
+ 
+  #print(edgeDF)
+  plot(g)
+  return(g)
+  
+}
